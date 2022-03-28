@@ -60,25 +60,18 @@ if err != nil {
 }
 ```
 
-### Status Codes
+### SMS
 
-#### `GET /200`: OK
+#### `POST /sms/send`: Send single message to a number
 
 ```go
-bypassOptOut := true
-senderID := "SMSto"
-callbackURL := "https://example.com/callback/handler"
-
 status, response, err := client.SMS.SendSingle(context.Background(), &SmsSendSingleRequest{
-  Message:      "This is test and \n this is a new line",
-  To:           "+35799999999999",
-  BypassOptOut: &bypassOptOut,
-  SenderID:     &senderID,
-  CallbackURL:  &callbackURL,
+    Message:      "This is test and \n this is a new line",
+    To:           "+35799999999999",
 })
 
 if err != nil {
-    log.Fatal(err)
+	log.Fatal(err)
 }
 
 log.Println(status.Success) // true
