@@ -56,7 +56,7 @@ All API calls return an `error` as the last return object. All successful calls 
 ```go
 result, response, err := client.SMS.SendSingle(context.Background(), &smsto.SmsSendSingleRequest{})
 if err != nil {
-  //handle error
+    //handle error
 }
 ```
 
@@ -66,12 +66,12 @@ if err != nil {
 
 ```go
 status, response, err := client.SMS.SendSingle(context.Background(), &SmsSendSingleRequest{
-  Message: "This is test and \n this is a new line",
-  To:      "+35799999999999",
+    Message: "This is test and \n this is a new line",
+    To:      "+35799999999999",
 })
 
 if err != nil {
-  log.Fatal(err)
+    log.Fatal(err)
 }
 
 log.Println(status.Success) // true
