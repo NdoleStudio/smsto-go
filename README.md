@@ -45,7 +45,7 @@ import (
 )
 
 func main()  {
-  client := smsto.New(smsto.WithAPIKey(/* API KEY */))
+    client := smsto.New(smsto.WithAPIKey(/* API KEY */))
 }
 ```
 
