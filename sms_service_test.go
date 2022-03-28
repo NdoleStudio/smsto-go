@@ -87,3 +87,49 @@ func TestSmsService_SendSingleResponse(t *testing.T) {
 	// Teardown
 	server.Close()
 }
+
+func TestSmsService_LastMessageRequest(t *testing.T) {
+	// Setup
+	t.Parallel()
+
+	// Arrange
+	requests := make([]*http.Request, 0)
+	apiKey := "apiKey"
+	server := helpers.MakeRequestCapturingTestServer(http.StatusOK, [][]byte{stubs.SmsLastMessage()}, &requests)
+	client := New(WithBaseURL(server.URL), WithAPIKey(apiKey))
+
+	// Act
+	_, _, err := client.SMS.LastMessage(context.Background())
+
+	// Assert
+	assert.Nil(t, err)
+
+	assert.Equal(t, 1, len(requests))
+
+	assert.Equal(t, "Bearer "+apiKey, requests[0].Header.Get("Authorization"))
+}
+
+func TestSmsService_LastMessageResponse(t *testing.T) {
+	// Setup
+	t.Parallel()
+
+	// Arrange
+	server := helpers.MakeTestServer(http.StatusOK, stubs.SmsLastMessage())
+	client := New(WithBaseURL(server.URL))
+
+	// Act
+	result, response, err := client.SMS.LastMessage(context.Background())
+
+	// Assert
+	assert.Nil(t, err)
+	assert.Equal(t, http.StatusOK, response.HTTPResponse.StatusCode)
+
+	var smsMessage SmsMessage
+	err = json.Unmarshal(stubs.SmsLastMessage(), &smsMessage)
+	assert.Nil(t, err)
+
+	assert.Equal(t, &smsMessage, result)
+
+	// Teardown
+	server.Close()
+}

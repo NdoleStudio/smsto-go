@@ -30,6 +30,7 @@ import "github.com/NdoleStudio/smsto-go"
 
 - [SMS](#sms)
     - `POST /sms/send`: Send single message to a number
+    - `GET /last/message`: Get the last message that you have sent
 
 ## Usage
 
@@ -65,7 +66,7 @@ if err != nil {
 #### `POST /sms/send`: Send single message to a number
 
 ```go
-status, response, err := client.SMS.SendSingle(context.Background(), &SmsSendSingleRequest{
+result, response, err := client.SMS.SendSingle(context.Background(), &SmsSendSingleRequest{
     Message: "This is test and \n this is a new line",
     To:      "+35799999999999",
 })
@@ -74,8 +75,22 @@ if err != nil {
     log.Fatal(err)
 }
 
-log.Println(status.Success) // true
+log.Println(result.Success) // true
 ```
+
+#### `GET /last/message`: Get the last message that you have sent
+
+```go
+message, response, err := client.SMS.LastMessage(context.Background())
+
+if err != nil {
+    log.Fatal(err)
+}
+
+log.Println(message.Id) // 302050741
+```
+
+
 
 ## Testing
 
