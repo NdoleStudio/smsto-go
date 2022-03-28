@@ -28,7 +28,7 @@ type SmsMessage struct {
 	Message           string      `json:"message"`
 	To                string      `json:"to"`
 	Status            string      `json:"status"`
-	ClientCost        int         `json:"client_cost"`
+	ClientCost        float64     `json:"client_cost"`
 	CallbackURL       string      `json:"callback_url"`
 	ScheduledFor      interface{} `json:"scheduled_for"`
 	Timezone          interface{} `json:"timezone"`
