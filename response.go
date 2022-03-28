@@ -1,4 +1,4 @@
-package client
+package smsto
 
 import (
 	"bytes"

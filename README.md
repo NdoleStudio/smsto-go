@@ -1,35 +1,35 @@
-# go-http-client
+# smsto-go
 
-[![Build](https://github.com/NdoleStudio/go-http-client/actions/workflows/main.yml/badge.svg)](https://github.com/NdoleStudio/go-http-client/actions/workflows/main.yml)
-[![codecov](https://codecov.io/gh/NdoleStudio/go-http-client/branch/main/graph/badge.svg)](https://codecov.io/gh/NdoleStudio/go-http-client)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/NdoleStudio/go-http-client/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/NdoleStudio/go-http-client/?branch=main)
-[![Go Report Card](https://goreportcard.com/badge/github.com/NdoleStudio/go-http-client)](https://goreportcard.com/report/github.com/NdoleStudio/go-http-client)
-[![GitHub contributors](https://img.shields.io/github/contributors/NdoleStudio/go-http-client)](https://github.com/NdoleStudio/go-http-client/graphs/contributors)
-[![GitHub license](https://img.shields.io/github/license/NdoleStudio/go-http-client?color=brightgreen)](https://github.com/NdoleStudio/go-http-client/blob/master/LICENSE)
-[![PkgGoDev](https://pkg.go.dev/badge/github.com/NdoleStudio/go-http-client)](https://pkg.go.dev/github.com/NdoleStudio/go-http-client)
+[![Build](https://github.com/NdoleStudio/smsto-go/actions/workflows/main.yml/badge.svg)](https://github.com/NdoleStudio/smsto-go/actions/workflows/main.yml)
+[![codecov](https://codecov.io/gh/NdoleStudio/smsto-go/branch/main/graph/badge.svg)](https://codecov.io/gh/NdoleStudio/smsto-go)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/NdoleStudio/smsto-go/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/NdoleStudio/smsto-go/?branch=main)
+[![Go Report Card](https://goreportcard.com/badge/github.com/NdoleStudio/smsto-go)](https://goreportcard.com/report/github.com/NdoleStudio/smsto-go)
+[![GitHub contributors](https://img.shields.io/github/contributors/NdoleStudio/smsto-go)](https://github.com/NdoleStudio/smsto-go/graphs/contributors)
+[![GitHub license](https://img.shields.io/github/license/NdoleStudio/smsto-go?color=brightgreen)](https://github.com/NdoleStudio/smsto-go/blob/master/LICENSE)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/NdoleStudio/smsto-go)](https://pkg.go.dev/github.com/NdoleStudio/smsto-go)
 
 
-This package provides a generic `go` client template for an HTTP API
+This package provides a `go` client for the SMS.to HTTP API https://developers.sms.to
 
 ## Installation
 
-`go-http-client` is compatible with modern Go releases in module mode, with Go installed:
+`smsto-go` is compatible with modern Go releases in module mode, with Go installed:
 
 ```bash
-go get github.com/NdoleStudio/go-http-client
+go get github.com/NdoleStudio/smsto-go
 ```
 
 Alternatively the same can be achieved if you use `import` in a package:
 
 ```go
-import "github.com/NdoleStudio/go-http-client"
+import "github.com/NdoleStudio/smsto-go"
 ```
 
 
 ## Implemented
 
-- [Status Codes](#status-codes)
-    - `GET /200`: OK
+- [SMS](#sms)
+    - `POST /sms/send`: Send single message to a number
 
 ## Usage
 
@@ -41,11 +41,11 @@ An instance of the client can be created using `New()`.
 package main
 
 import (
-	"github.com/NdoleStudio/go-http-client"
+	"github.com/NdoleStudio/smsto-go"
 )
 
 func main()  {
-	statusClient := client.New(client.WithDelay(200))
+	client := smsto.New(smsto.WithAPIKey(/* API KEY */))
 }
 ```
 
@@ -54,7 +54,7 @@ func main()  {
 All API calls return an `error` as the last return object. All successful calls will return a `nil` error.
 
 ```go
-status, response, err := statusClient.Status.Ok(context.Background())
+result, response, err := client.SMS.SendSingle(context.Background(), &smsto.SmsSendSingleRequest{})
 if err != nil {
     //handle error
 }
@@ -65,13 +65,23 @@ if err != nil {
 #### `GET /200`: OK
 
 ```go
-status, response, err := statusClient.Status.Ok(context.Background())
+bypassOptOut := true
+senderID := "SMSto"
+callbackURL := "https://example.com/callback/handler"
+
+status, response, err := client.SMS.SendSingle(context.Background(), &SmsSendSingleRequest{
+  Message:      "This is test and \n this is a new line",
+  To:           "+35799999999999",
+  BypassOptOut: &bypassOptOut,
+  SenderID:     &senderID,
+  CallbackURL:  &callbackURL,
+})
 
 if err != nil {
     log.Fatal(err)
 }
 
-log.Println(status.Description) // OK
+log.Println(status.Success) // true
 ```
 
 ## Testing
